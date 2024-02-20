@@ -1,6 +1,8 @@
 import {Nunito} from "next/font/google";
 import "./globals.css";
-import Navbar from "./components/Navbar/Navbar";
+import Navbar from "@/app/components/navbar/Navbar";
+import ClientOnly  from "./components/ClientOnly";
+import Modal from "./components/modals/Modal";
 
 const font = Nunito({
   subsets: ["latin"],
@@ -19,7 +21,11 @@ export default function RootLayout({
   return (
       <html lang="en">
       <body className={font.className}>
-      <Navbar />
+      <ClientOnly>
+        <Modal actionLabel="submit" title="hello world" isOpen/>
+        <Navbar />
+      </ClientOnly>
+
       {children}
       </body>
       </html>

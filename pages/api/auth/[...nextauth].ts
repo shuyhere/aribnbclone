@@ -11,13 +11,16 @@ import prisma from "@/app/libs/prismadb"
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
+    // network errors：https://github.com/nextauthjs/next-auth/issues/3920
     GithubProvider({
         clientId: process.env.GITHUB_ID as string,
         clientSecret: process.env.GITHUB_SECRET as string,
+        httpOptions: {timeout: 40000},
       }),
     GoogleProvider({
         clientId: process.env.GOOGLE_CLIENT__ID as string,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+        httpOptions: {timeout: 40000}
       }),
     CredentialsProvider({
         name: 'Credentials',
@@ -27,7 +30,7 @@ export const authOptions: AuthOptions = {
         },
         async authorize(credentials) {
           if (!credentials?.email || !credentials?.password) {
-            throw new Error('Invalid credentials');
+            throw new Error('Wrong user or password');
           }
 
           const user = await prisma.user.findUnique({
